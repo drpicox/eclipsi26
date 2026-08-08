@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eclipsi + Perseids · 12 d'agost 2026</title>
+<meta name="description" content="Mapa dels 18 punts oficials de l'eclipsi total del 12 d'agost de 2026 a Catalunya, ombres del relleu i pluja de Perseids. Funciona sense cobertura.">
+
+<meta name="theme-color" content="#0d1016">
+<meta name="color-scheme" content="dark">
+<link rel="manifest" href="./manifest.webmanifest">
+
+<!-- Instal·lable com a app a Android i a iPhone -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Eclipsi 26">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="icon" href="./icons/icon-192.png" sizes="192x192">
+<link rel="icon" href="./icons/favicon.png" sizes="64x64">
+
+<link rel="stylesheet" href="./vendor/leaflet.css">
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<div id="wrap">
+  <div id="side">
+    <div id="grab"><span class="grip"></span><span class="gtxt">Eclipsi + Perseids · 12 d'agost</span></div>
+    <header>
+      <h1>Eclipsi total + Perseids</h1>
+      <div class="sub">Dimecres 12 d'agost de 2026 · sortida des de Tiana</div>
+    </header>
+    <div class="tabs">
+      <div class="tab on" data-p="mapa">Capes</div>
+      <div class="tab" data-p="rank">Rànquing</div>
+      <div class="tab" data-p="dia">El dia</div>
+      <div class="tab" data-p="info">Notes</div>
+    </div>
+    <div id="body">
+
+      <div class="pane on" id="p-mapa">
+
+        <h2>Mapes fora de línia</h2>
+        <div class="card" id="off-card">
+          <div class="off-head">
+            <div>
+              <h3 id="off-titol">Comprovant…</h3>
+              <div class="meta" id="off-sub">&nbsp;</div>
+            </div>
+            <button class="btn-ghost" id="off-toggle" aria-expanded="false">Opcions</button>
+          </div>
+
+          <div id="off-detall" hidden>
+            <div class="note" style="margin-top:10px">Quin fons vols tenir desat al mòbil:</div>
+            <label class="chk"><input type="checkbox" class="off-base" value="carreteres" checked> Carreteres</label>
+            <label class="chk"><input type="checkbox" class="off-base" value="satelit" checked> Satèl·lit</label>
+            <label class="chk"><input type="checkbox" class="off-base" value="relleu"> Relleu</label>
+            <label class="chk"><input type="checkbox" class="off-base" value="fosc"> Fosc</label>
+
+            <div class="note" style="margin-top:10px">Fins a quin detall:</div>
+            <div class="seg" id="off-detallzoom">
+              <button data-zmax="13">Bàsic</button>
+              <button data-zmax="14" class="on">Recomanat</button>
+              <button data-zmax="15">Màxim</button>
+            </div>
+            <div class="note" id="off-estim" style="margin-top:6px">&nbsp;</div>
+
+            <div class="navrow">
+              <a href="#" id="off-baixa" role="button">Descarrega</a>
+              <a href="#" id="off-esborra" role="button">Esborra</a>
+            </div>
+
+            <div id="off-prog" hidden>
+              <div class="pbar"><i id="off-pbar"></i></div>
+              <div class="meta" id="off-progtxt" style="margin-top:6px">&nbsp;</div>
+              <div class="navrow"><a href="#" id="off-atura" role="button">Atura</a></div>
+            </div>
+
+            <div class="note" style="margin-top:10px">Descarrega-ho <b>a casa amb wifi</b>, no pel camí. Un cop desat, el mapa es dibuixa sense cobertura: a la franja de l'eclipsi hi haurà desenes de milers de persones i la xarxa mòbil caurà. Si s'atura a mitges, torna-hi: continua on ho havia deixat.</div>
+          </div>
+        </div>
+
+        <h2>Punts oficials · durada de la totalitat</h2>
+        <label class="chk"><input type="checkbox" data-l="t90" checked><span class="dot" style="background:var(--t1)"></span> 90 s o més <span class="s" style="color:var(--faint)">— Terres de l'Ebre</span></label>
+        <label class="chk"><input type="checkbox" data-l="t60" checked><span class="dot" style="background:var(--t2)"></span> 60–89 s</label>
+        <label class="chk"><input type="checkbox" data-l="t40" checked><span class="dot" style="background:var(--t3)"></span> 40–59 s</label>
+        <label class="chk"><input type="checkbox" data-l="t00" checked><span class="dot" style="background:var(--t4)"></span> menys de 40 s <span class="s" style="color:var(--faint)">— límit nord</span></label>
+        <h2>Altres capes</h2>
+        <label class="chk"><input type="checkbox" data-l="ref" checked><span class="dot" style="background:var(--sky)"></span> Dins la franja, sense punt oficial</label>
+        <label class="chk"><input type="checkbox" data-l="bon" checked><span class="dot" style="background:var(--food)"></span> Bufets bonÀrea</label>
+        <label class="chk"><input type="checkbox" data-l="poi" checked><span class="dot" style="background:var(--poi)"></span> Per a les nenes (18 llocs)</label>
+        <label class="chk"><input type="checkbox" data-l="home" checked><span class="dot" style="background:var(--home)"></span> Tiana</label>
+        <h2>Ombres del relleu</h2>
+        <label class="chk"><input type="checkbox" id="omb" checked><span class="dot" style="background:#96202880;border:1px solid #96202f"></span> On el terreny tapa el Sol</label>
+        <div class="slider">
+          <span>Transparència</span>
+          <input type="range" id="ombOp" min="0" max="100" value="100">
+          <b id="ombOpV" class="mono">100%</b>
+        </div>
+        <div class="note" style="margin-top:2px">Calculat sobre el model d'elevació a 58 m: per a cada punt es traça la línia de visió cap al Sol (azimut 285,7°, altura 4,7°) i es mira si topa amb el relleu fins a 22 km. <b>Clica el mapa a qualsevol lloc</b> i et diu si des d'allà es veu.</div>
+        <div class="tip" style="margin-top:8px">Prova de validació: cap dels 18 punts oficials cau en ombra. El càlcul coincideix amb el criteri de l'IEEC.</div>
+        <h2>Fons del mapa</h2>
+        <div class="seg">
+          <button data-base="carreteres">Carreteres</button>
+          <button data-base="relleu">Relleu</button>
+          <button data-base="satelit">Satèl·lit</button>
+          <button data-base="fosc">Fosc</button>
+        </div>
+        <div class="note" style="margin-top:6px">El <b>satèl·lit</b> és el que millor et diu què hi ha realment al davant: arbredes, naus, hivernacles. El model d'ombres no els veu.</div>
+        <h2>Vista</h2>
+        <label class="chk"><input type="checkbox" id="lbl" checked> Etiquetes de durada al mapa</label>
+        <div class="note">Al Camp de Tarragona hi ha set punts en 25 km: les seves etiquetes surten quan hi fas zoom. Al mòbil, totes les etiquetes apareixen a partir del zoom 9. Clica qualsevol marcador per veure la fitxa completa: durada, cel nocturn, taxa de meteors hora a hora i temps de cotxe.</div>
+        <div class="tip"><b>El Sol a la totalitat:</b> azimut 285,7° · alçada 4,7°. Necessites horitzó lliure cap a l'oest-nord-oest. Verifica-ho in situ qualsevol vespre d'aquesta setmana cap a les 20:25.</div>
+      </div>
+
+      <div class="pane" id="p-rank"></div>
+      <div class="pane" id="p-dia"></div>
+      <div class="pane" id="p-info"></div>
+
+    </div>
+  </div>
+  <div id="map">
+    <div id="legend">
+      <b>Durada totalitat</b>
+      <div class="r"><span class="dot" style="background:var(--t1)"></span> ≥ 90 s</div>
+      <div class="r"><span class="dot" style="background:var(--t2)"></span> 60–89 s</div>
+      <div class="r"><span class="dot" style="background:var(--t3)"></span> 40–59 s</div>
+      <div class="r"><span class="dot" style="background:var(--t4)"></span> &lt; 40 s</div>
+      <div class="r" style="margin-top:6px"><span class="dot" style="background:var(--poi)"></span> Per a nenes</div>
+      <div class="r"><span class="dot" style="background:var(--food)"></span> bonÀrea</div>
+      <div class="r" style="margin-top:6px"><span class="dot" style="background:#962028;opacity:.55"></span> Relleu tapa el Sol</div>
+    </div>
+    <button id="jo" title="On sóc" aria-label="On sóc">
+      <svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><path fill="currentColor" d="M12 8a4 4 0 100 8 4 4 0 000-8zm8.94 3A9.01 9.01 0 0013 3.06V1h-2v2.06A9.01 9.01 0 003.06 11H1v2h2.06A9.01 9.01 0 0011 20.94V23h2v-2.06A9.01 9.01 0 0020.94 13H23v-2h-2.06zM12 19a7 7 0 110-14 7 7 0 010 14z"/></svg>
+    </button>
+  </div>
+</div>
+
+<div id="avisos" aria-live="polite">
+  <div id="nova" class="avis" hidden><span>Hi ha una versió nova</span><button id="nova-b">Actualitza</button></div>
+  <div id="instal" class="avis" hidden><span>Instal·la-la al mòbil per tenir-la sempre a mà</span><button id="instal-b">Instal·la</button><button id="instal-x" class="x" aria-label="Tanca">✕</button></div>
+  <div id="xip" class="avis" hidden></div>
+</div>
+
+<script src="./vendor/leaflet.js"></script>
+<script src="./data/eclipsi.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
