@@ -71,6 +71,11 @@ a:hover{text-decoration:underline}
 .leaflet-bar a:hover{background:var(--line)}
 .mk{border-radius:50%;border:2px solid rgba(255,255,255,.75);
   box-shadow:0 0 0 1px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.5)}
+/* Leaflet 1.9 barreja les tessel·les amb plus-lighter per dissimular el
+   solapament de l'animació de zoom. Amb densitat de píxels fraccionària (1,6 o
+   2,75, habituals a Android) el resultat és una quadrícula de línies clares
+   permanent sobre el mapa. Val més la costura d'un instant en fer zoom. */
+.leaflet-container img.leaflet-tile{mix-blend-mode:normal}
 .mk-lab{background:transparent;border:none}
 .osm-dim{filter:invert(1) hue-rotate(180deg) brightness(.72) contrast(1.05) saturate(.5)}
 .mk-lab div{font-size:9.5px;font-weight:700;color:#fff;text-align:center;

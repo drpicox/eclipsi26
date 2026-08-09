@@ -27,8 +27,12 @@ vegada:
 
 1. **Settings → Pages**
 2. A *Build and deployment* → **Source**, tria **GitHub Actions**
-3. Ja està. A cada `push` a `main` es publica a
-   `https://drpicox.github.io/eclipsi26/`
+3. Ja està. A cada `push` a `main` es publica sol.
+
+El compte té un domini propi, o sigui que l'adreça bona és
+**<https://david-rodenas.com/eclipsi26/>**; `drpicox.github.io/eclipsi26/` hi
+redirigeix. Totes les rutes de l'app són relatives, així que funciona igual
+sota qualsevol subcarpeta.
 
 > **No triïs *Deploy from a branch*.** Amb aquesta opció el workflow no s'executa,
 > i el que fa el workflow és segellar `sw.js` amb l'SHA del commit. Sense aquest
