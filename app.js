@@ -423,12 +423,15 @@ if('serviceWorker' in navigator){
       });
     }).catch(() => {});
   });
-  // La primera visita també canvia de controlador (clients.claim), i allà no cal
-  // recarregar res: només ho fem quan de debò substituïm una versió que manava.
-  const jaManava = !!navigator.serviceWorker.controller;
+  // La primera visita també canvia de controlador (clients.claim) i allà no cal
+  // recarregar res. Però el senyal s'ha d'anar actualitzant: si ens quedéssim
+  // amb la foto del moment de carregar, en una primera visita que després rep
+  // una actualització el botó «Actualitza» no faria res.
+  let jaManava = !!navigator.serviceWorker.controller;
   let recarregant = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if(!jaManava || recarregant) return;
+    if(!jaManava){ jaManava = true; return; }   // primera presa de control
+    if(recarregant) return;
     recarregant = true;
     location.reload();
   });
