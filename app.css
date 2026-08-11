@@ -4,6 +4,8 @@
   --gold:#e8b84b; --gold-dim:#8a6f2c;
   --t1:#f2c14e; --t2:#e08b3e; --t3:#c85a49; --t4:#8a4a5e;
   --sky:#5ec8d8; --poi:#7ea8f0; --food:#b48ce0; --home:#6fd39a;
+  /* zona segura de l'iPhone (notch i barra d'inici), llegida també des del JS */
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box}
 /* qualsevol display: d'autor guanya a l'[hidden] del navegador; aquí no volem */
@@ -149,7 +151,12 @@ a:hover{text-decoration:underline}
   .slider input[type=range]{height:34px}
   .navrow a{padding:12px 6px;font-size:13.5px}
   .rank{padding:11px 0}
-  .leaflet-popup-content{margin:13px 14px;min-width:0;max-width:74vw}
+  /* la fitxa no pot ser més alta que l'espai entre el notch i el full de baix:
+     si no hi cap, fa scroll per dins en lloc de quedar tallada sota el full */
+  .leaflet-popup-content{margin:13px 14px;min-width:0;max-width:74vw;
+    max-height:max(160px,calc(100dvh - var(--sat) - var(--sab) - 190px));
+    overflow-y:auto;-webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;touch-action:pan-y}
   .leaflet-control-zoom{display:none}
   /* l'atribució queda tapada pel full: la pugem just per sobre del cop d'ull */
   .leaflet-bottom.leaflet-right{bottom:calc(104px + env(safe-area-inset-bottom))}

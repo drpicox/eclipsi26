@@ -21,8 +21,13 @@ const hm   = m => m==null ? '—' : (m>=60 ? Math.floor(m/60)+' h '+(m%60?String
 
 const map = L.map('map',{zoomControl:true, attributionControl:true,
   tap:true, tapTolerance:18}).setView([41.05,0.95], 9);
-L.Popup.mergeOptions({autoPanPadding: MOBIL ? [16,16] : [24,24],
-                      autoPanPaddingBottomRight: MOBIL ? [16,130] : [24,24],
+// zona segura del mòbil: la defineix el CSS (:root) i aquí només la llegim
+const _arrel = getComputedStyle(document.documentElement);
+const SAFE_DALT = parseFloat(_arrel.getPropertyValue('--sat')) || 0;
+const SAFE_BAIX = parseFloat(_arrel.getPropertyValue('--sab')) || 0;
+// a baix, el full plegat ocupa 104px + barra d'inici: el popup s'atura per sobre
+L.Popup.mergeOptions({autoPanPadding: MOBIL ? [16,16+SAFE_DALT] : [24,24],
+                      autoPanPaddingBottomRight: MOBIL ? [16,118+SAFE_BAIX] : [24,24],
                       maxWidth: MOBIL ? 300 : 340});
 const ATTR = '&copy; OpenStreetMap · dades: Generalitat de Catalunya / IEEC';
 const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
