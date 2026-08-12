@@ -96,6 +96,8 @@ function fitxa(p){
          `Totalitat ${mmss(p.totalitat_s)}</span></div>`;
     h += `<div style="font-size:12px;color:#8d99ad;margin-bottom:8px">Aforament: `+
          `${p.aforament_persones? p.aforament_persones.toLocaleString('ca')+' persones · '+p.aforament_vehicles.toLocaleString('ca')+' vehicles':'no publicat'}</div>`;
+    if(p.parquings)
+      h += `<div style="font-size:12px;color:#8d99ad;margin-bottom:8px">${p.parquings.length} pàrquings oficials marcats al mapa, de P1 (el més gran) a P${p.parquings.length}: apropa-hi el zoom.</div>`;
     if(p.reserva === 'exhaurida')
       h += `<div class="alerta">Cal reserva prèvia i ja està exhaurida.</div>`;
     if(p.nota_web)
@@ -154,6 +156,28 @@ D.punts.forEach(p=>{
     // El Camp de Tarragona té 7 punts en 25 km: les seves etiquetes només surten en zoom proper
     lab.addTo(DENS.has(p.municipi) ? labelsZoom : labels);
   }
+});
+
+// Pàrquings oficials d'un punt (P1 sempre el més gran), amb el rètol
+// dimensionat per superfície. Només en zoom proper: de lluny taparien el punt.
+const parkings = L.layerGroup();
+D.punts.forEach(p=>{
+  (p.parquings||[]).forEach(pk=>{
+    const w = Math.max(20, Math.min(28, Math.round(Math.sqrt(pk.m2)/4)));
+    const h = Math.round(w*.68);
+    const dm = Math.hypot((pk.lat-p.lat)*111320,
+                          (pk.lon-p.lon)*111320*Math.cos(p.lat*Math.PI/180));
+    const dtxt = dm < 950 ? 'uns '+Math.round(dm/50)*50+' m'
+                          : 'uns '+String(Math.round(dm/100)/10).replace('.',',')+' km';
+    L.marker([pk.lat,pk.lon],{icon:L.divIcon({className:'',
+      html:`<div class="mk-p" style="width:${w}px;height:${h}px">P${pk.n}</div>`,
+      iconSize:[w,h], iconAnchor:[w/2,h/2]})})
+      .bindPopup(`<h4>Pàrquing ${pk.n} · ${p.municipi}</h4>`
+        + (pk.nota ? `<div style="font-size:12.5px;margin-bottom:6px">${pk.nota}</div>` : '')
+        + `<div style="font-size:12px;color:#8d99ad">${pk.m2.toLocaleString('ca')} m² · a ${dtxt} del punt d'observació</div>`
+        + navLinks(pk.lat, pk.lon, `Pàrquing ${pk.n} ${p.municipi}`), {maxWidth:280})
+      .addTo(parkings);
+  });
 });
 
 D.pois.forEach(p=>{
@@ -222,11 +246,12 @@ document.querySelectorAll('[data-l]').forEach(c=>c.addEventListener('change',e=>
 }));
 let lblOn = true;
 // al mòbil la pantalla és estreta: pugem el llindar perquè no s'amunteguin
-const Z_LAB = MOBIL ? 9 : 0, Z_LAB_DENS = MOBIL ? 11 : 10;
+const Z_LAB = MOBIL ? 9 : 0, Z_LAB_DENS = MOBIL ? 11 : 10, Z_PARK = 13;
 function syncLabels(){
   const z = map.getZoom();
   (lblOn && z >= Z_LAB)      ? map.addLayer(labels)     : map.removeLayer(labels);
   (lblOn && z >= Z_LAB_DENS) ? map.addLayer(labelsZoom) : map.removeLayer(labelsZoom);
+  (z >= Z_PARK) ? map.addLayer(parkings) : map.removeLayer(parkings);
 }
 document.getElementById('lbl').addEventListener('change',e=>{ lblOn = e.target.checked; syncLabels(); });
 const ombChk = document.getElementById('omb'), ombRng = document.getElementById('ombOp');

@@ -73,6 +73,10 @@ a:hover{text-decoration:underline}
 .leaflet-bar a:hover{background:var(--line)}
 .mk{border-radius:50%;border:2px solid rgba(255,255,255,.75);
   box-shadow:0 0 0 1px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.5)}
+.mk-p{display:flex;align-items:center;justify-content:center;
+  background:#2e6fd0;color:#fff;font-size:10px;font-weight:700;letter-spacing:.2px;
+  border:1.5px solid rgba(255,255,255,.85);border-radius:5px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.5)}
 /* Leaflet 1.9 barreja les tessel·les amb plus-lighter per dissimular el
    solapament de l'animació de zoom. Amb densitat de píxels fraccionària (1,6 o
    2,75, habituals a Android) el resultat és una quadrícula de línies clares
