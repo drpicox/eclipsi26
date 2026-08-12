@@ -96,8 +96,10 @@ function fitxa(p){
          `Totalitat ${mmss(p.totalitat_s)}</span></div>`;
     h += `<div style="font-size:12px;color:#8d99ad;margin-bottom:8px">Aforament: `+
          `${p.aforament_persones? p.aforament_persones.toLocaleString('ca')+' persones · '+p.aforament_vehicles.toLocaleString('ca')+' vehicles':'no publicat'}</div>`;
-    if(p.parquings)
-      h += `<div style="font-size:12px;color:#8d99ad;margin-bottom:8px">${p.parquings.length} pàrquings oficials marcats al mapa, de P1 (el més gran) a P${p.parquings.length}: apropa-hi el zoom.</div>`;
+    if(p.parquings){
+      const pq = p.parquings;
+      h += `<div style="font-size:12px;color:#8d99ad;margin-bottom:8px">${pq.length} pàrquings oficials marcats al mapa (P${pq[0].n}–P${pq[pq.length-1].n}): apropa-hi el zoom.</div>`;
+    }
     if(p.reserva === 'exhaurida')
       h += `<div class="alerta">Cal reserva prèvia i ja està exhaurida.</div>`;
     if(p.nota_web)
@@ -163,18 +165,23 @@ D.punts.forEach(p=>{
 const parkings = L.layerGroup();
 D.punts.forEach(p=>{
   (p.parquings||[]).forEach(pk=>{
-    const w = Math.max(20, Math.min(28, Math.round(Math.sqrt(pk.m2)/4)));
+    const lab = 'P'+pk.n;
+    const w = Math.max(8 + 6*lab.length, Math.min(28, Math.round(Math.sqrt(pk.m2||0)/4)));
     const h = Math.round(w*.68);
     const dm = Math.hypot((pk.lat-p.lat)*111320,
                           (pk.lon-p.lon)*111320*Math.cos(p.lat*Math.PI/180));
     const dtxt = dm < 950 ? 'uns '+Math.round(dm/50)*50+' m'
                           : 'uns '+String(Math.round(dm/100)/10).replace('.',',')+' km';
+    const dades = [];
+    if(pk.m2) dades.push(pk.m2.toLocaleString('ca')+' m²');
+    // més enllà de ~2 km ja no és «el pàrquing del punt»: la distància confon
+    if(dm < 2200) dades.push(`a ${dtxt} del punt d'observació`);
     L.marker([pk.lat,pk.lon],{icon:L.divIcon({className:'',
-      html:`<div class="mk-p" style="width:${w}px;height:${h}px">P${pk.n}</div>`,
+      html:`<div class="mk-p" style="width:${w}px;height:${h}px">${lab}</div>`,
       iconSize:[w,h], iconAnchor:[w/2,h/2]})})
       .bindPopup(`<h4>Pàrquing ${pk.n} · ${p.municipi}</h4>`
         + (pk.nota ? `<div style="font-size:12.5px;margin-bottom:6px">${pk.nota}</div>` : '')
-        + `<div style="font-size:12px;color:#8d99ad">${pk.m2.toLocaleString('ca')} m² · a ${dtxt} del punt d'observació</div>`
+        + (dades.length ? `<div style="font-size:12px;color:#8d99ad">${dades.join(' · ')}</div>` : '')
         + navLinks(pk.lat, pk.lon, `Pàrquing ${pk.n} ${p.municipi}`), {maxWidth:280})
       .addTo(parkings);
   });
@@ -393,6 +400,7 @@ document.getElementById('p-info').innerHTML = `
 <b>Mines de Bellmunt i Coves de Benifallet: reserva.</b> Amb l'allau de turisme d'eclipsi, no us hi presenteu sense.<br><br>
 <b>Deltebre, la Sénia i Tortosa no tenen punt oficial</b> tot i ser dins la franja. La Sénia i Alcanar són el màxim de Catalunya, ~97 s.<br><br>
 <b>Valls: reserva exhaurida.</b> Van ampliar de 4.100 a 5.000 places i es van esgotar en 24 hores. Demanen que qui no hi pugui anar l'anul·li, o sigui que val la pena tornar-ho a mirar.<br><br>
+<b>Reserves també exhaurides a Torredembarra, Cambrils, Reus i Lleida.</b> A Montbrió cal reserva de plaça d'aparcament. Els punts de les Terres de l'Ebre i la Terra Alta són d'accés lliure.<br><br>
 <b>Tarragona no té un punt únic tancat</b>: reparteixen 23.000 ulleres i concentren la jornada a Marina Port Tàrraco.<br><br>
 <b>Comproveu la pàgina oficial de cada punt</b> (botó a la fitxa) abans de sortir: és on publiquen reserves, horaris d'obertura i llançadores. Jo només he verificat la de Valls i la de Tarragona en detall.
 </div></div>
